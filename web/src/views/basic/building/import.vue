@@ -26,7 +26,7 @@
                 <a
                     :href="
                         ASSET_HOST +
-                            '/template/%E5%9B%BA%E5%AE%9A%E8%B5%84%E4%BA%A7%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx'
+                            '/template/%E6%88%BF%E4%BA%A7%E6%A1%A3%E6%A1%88%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx'
                     "
                     target="_blank"
                 >
@@ -84,6 +84,7 @@ import { Header, Result, WaterMark } from '@/components';
 import { Card, Button, Steps, Step, Upload, Icon, Message, Table, Modal } from 'view-design';
 import * as utils from '@/utils';
 import { ASSET_HOST } from '@/config';
+import moment from 'moment';
 
 const columns = [
     {
@@ -95,6 +96,11 @@ const columns = [
         title: '建筑面积',
         minWidth: 80,
         key: 'construction_area'
+    },
+    {
+        title: '入住时间',
+        minWidth: 80,
+        render: (h, p) => h('span', p.row.check_in_at ? moment(p.row.check_in_at).format('YYYY-MM-DD') : '-')
     },
     {
         title: '业主姓名',

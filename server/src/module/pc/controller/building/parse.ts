@@ -17,10 +17,7 @@ import xlsx from 'node-xlsx';
 import { File } from 'formidable';
 import utils from '~/utils';
 import { HOUSE, CARPORT, WAREHOUSE, MERCHANT, GARAGE } from '~/constant/building';
-
-interface RequestBody {
-    community_id: number;
-}
+import moment from 'moment';
 
 interface Record {
     type: typeof HOUSE | typeof CARPORT | typeof WAREHOUSE;
@@ -79,7 +76,18 @@ const PcBuildingParseAction = <Action>{
                 continue;
             }
 
-            const [type_label, area, building, unit, number, construction_area, name, idcard, phone] = item;
+            const [
+                type_label,
+                area,
+                building,
+                unit,
+                number,
+                construction_area,
+                excel_check_in_at,
+                name,
+                idcard,
+                phone
+            ] = item;
             let type = null;
 
             switch (type_label) {
@@ -115,6 +123,9 @@ const PcBuildingParseAction = <Action>{
                 unit: unit ? unit : null,
                 number,
                 construction_area,
+                check_in_at: excel_check_in_at
+                    ? moment(Math.round((excel_check_in_at - (25567 + 2)) * 86400 * 1000)).valueOf()
+                    : null,
                 name: name ? name : null,
                 idcard: idcard ? idcard : null,
                 phone: phone ? phone : null,
@@ -135,35 +146,61 @@ const PcBuildingParseAction = <Action>{
 
             if (area && area.length > 26) {
                 data.error.push('「园区编号/建筑商开发期数」字数超过26个字');
-            } else if (building && building.length > 26) {
+            }
+
+            if (building && building.length > 26) {
                 data.error.push('「栋」字数超过26个字');
-            } else if (unit && unit.length > 26) {
+            }
+
+            if (unit && unit.length > 26) {
                 data.error.push('「单元/区域」字数超过26个字');
-            } else if (!number) {
+            }
+
+            if (!number) {
                 data.error.push('「门牌号/编号」不能为空');
-            } else if (number && number.length > 26) {
+            }
+
+            if (number && number.length > 26) {
                 data.error.push('「门牌号/编号」字数超过26个字');
-            } else if (haveDefineOwerValue && haveUndefineOwerValue) {
+            }
+
+            if (!/^[1-9]\d*(\.\d+)?$/.test(construction_area)) {
+                data.error.push('建筑面积错误');
+            }
+
+            if (excel_check_in_at && !/^\d+$/.test(excel_check_in_at)) {
+                data.error.push('入住时间错误');
+            }
+
+            if (haveDefineOwerValue && haveUndefineOwerValue) {
                 data.error.push('业主信息不完整');
-            } else if (allDefinedOwerValue && name.length > 12) {
+            }
+
+            if (allDefinedOwerValue && name.length > 12) {
                 data.error.push('业主姓名字数超过12个字');
-            } else if (allDefinedOwerValue && !utils.idcard.verify(idcard)) {
+            }
+
+            if (allDefinedOwerValue && !utils.idcard.verify(idcard)) {
                 data.error.push('业主身份证错误');
-            } else if (allDefinedOwerValue && !/^1\d{10}$/.test(phone)) {
+            }
+
+            if (allDefinedOwerValue && !/^1\d{10}$/.test(phone)) {
                 data.error.push('业主手机号码错误');
-            } else if (
+            }
+
+            if (
                 await ctx.model
                     .from('ejyy_building_info')
                     .where(where)
                     .first()
             ) {
                 data.error.push('已导入相同数据');
-            } else {
-                rightData.push(data);
             }
 
             if (data.error.length) {
                 errorData.push(data);
+            } else {
+                rightData.push(data);
             }
         }
 

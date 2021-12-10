@@ -301,6 +301,7 @@ declare namespace EjyyModel {
         unit?: string;
         number: string;
         construction_area: number;
+        check_in_at?: number;
         created_by: number;
         created_at: number;
     }

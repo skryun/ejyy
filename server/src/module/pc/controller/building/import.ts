@@ -15,6 +15,7 @@ import { SUCCESS } from '~/constant/code';
 import * as ROLE from '~/constant/role_access';
 import utils from '~/utils';
 import { HOUSE, CARPORT, WAREHOUSE, MERCHANT, GARAGE } from '~/constant/building';
+import moment from 'moment';
 
 interface Building {
     type: typeof HOUSE | typeof CARPORT | typeof WAREHOUSE;
@@ -23,6 +24,7 @@ interface Building {
     unit?: string;
     number: string;
     construction_area: number;
+    check_in_at?: number;
     name?: string;
     idcard?: string;
     phone?: string;
@@ -69,6 +71,8 @@ const PcBuildingImportAction = <Action>{
                             return false;
                         } else if (!record.number) {
                             return false;
+                        } else if (record.check_in_at && !/^\d{13}$/.test(record.check_in_at)) {
+                            return false;
                         }
 
                         const haveDefineOwerValue = [record.name, record.idcard, record.phone].some(val => val);
@@ -101,7 +105,7 @@ const PcBuildingImportAction = <Action>{
         const ids = [];
 
         for (let record of buildings) {
-            const { type, area, building, unit, number, construction_area, name, idcard, phone } = record;
+            const { type, area, building, unit, number, construction_area, check_in_at, name, idcard, phone } = record;
             const [insertId] = await ctx.model.from('ejyy_building_info').insert({
                 community_id,
                 type,
@@ -110,6 +114,11 @@ const PcBuildingImportAction = <Action>{
                 unit,
                 number,
                 construction_area,
+                check_in_at: check_in_at
+                    ? moment(check_in_at)
+                          .startOf('day')
+                          .valueOf()
+                    : null,
                 created_by: ctx.pcUserInfo.id,
                 created_at
             });
