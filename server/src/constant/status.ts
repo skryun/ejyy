@@ -12,10 +12,6 @@
 
 // 各类数据表状态
 
-// 正常和冻结
-export const NORMAL_STATUS = 1;
-export const FREEZE_STATUS = 0;
-
 // 与非
 export const TRUE = 1;
 export const FALSE = 0;

@@ -13,8 +13,6 @@
 import {
     TRUE,
     FALSE,
-    NORMAL_STATUS,
-    FREEZE_STATUS,
     BINDING_BUILDING,
     UNBINDING_BUILDING,
     BINDING_CAR,
@@ -141,8 +139,6 @@ declare namespace EjyyModel {
         avatar_url: string | null;
         gender: Gender;
         signature: string;
-        // 1 正常 0冻结
-        status: typeof NORMAL_STATUS | typeof FREEZE_STATUS;
         intact: typeof INTACT_USER_INFO | typeof INCOMPLETE_USER_INFO;
         created_at: number;
     }

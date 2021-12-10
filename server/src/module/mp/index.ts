@@ -18,7 +18,6 @@ import * as MpModuleRouter from './router';
 import config from '~/config';
 import validatorService from '~/service/validator';
 import { PARAMS_ERROR, USER_INFO_UNINTACT } from '~/constant/code';
-import { FREEZE_STATUS } from '~/constant/status';
 import cwlog from 'chowa-log';
 
 function MpModule(appRouter: KoaRouter) {
@@ -58,7 +57,7 @@ function MpModule(appRouter: KoaRouter) {
                     )
                     .first();
 
-                if (!ctx.mpUserInfo || ctx.mpUserInfo.status === FREEZE_STATUS) {
+                if (!ctx.mpUserInfo) {
                     return (ctx.status = 401);
                 }
 

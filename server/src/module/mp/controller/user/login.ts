@@ -12,7 +12,7 @@
 
 import { Action } from '~/types/action';
 import { SUCCESS, WEHCAT_MP_LOGIN_ERROR, ACCOUNT_HAS_BEEN_FREEZE } from '~/constant/code';
-import { FREEZE_STATUS, INCOMPLETE_USER_INFO } from '~/constant/status';
+import { INCOMPLETE_USER_INFO } from '~/constant/status';
 import * as wechatService from '~/service/wechat';
 import communityService from '~/service/community';
 import utils from '~/utils';
@@ -117,13 +117,6 @@ const MpUserLoginAction = <Action>{
                 token
             });
         } else {
-            if (mpUserInfo.status === FREEZE_STATUS) {
-                return (ctx.body = {
-                    code: ACCOUNT_HAS_BEEN_FREEZE,
-                    message: '账号已被冻结'
-                });
-            }
-
             mpUserInfo.phone = utils.phone.hide(mpUserInfo.phone);
 
             await ctx.model
