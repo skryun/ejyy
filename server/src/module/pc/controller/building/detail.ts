@@ -49,7 +49,17 @@ const PcBuildingDetailAction = <Action>{
             .from('ejyy_building_info')
             .where('community_id', community_id)
             .andWhere('id', id)
-            .select('id', 'type', 'area', 'building', 'unit', 'number', 'construction_area', 'created_at')
+            .select(
+                'id',
+                'type',
+                'area',
+                'building',
+                'unit',
+                'number',
+                'construction_area',
+                'check_in_at',
+                'created_at'
+            )
             .first();
 
         if (!info) {

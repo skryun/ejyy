@@ -15,6 +15,7 @@ import { SUCCESS, QUERY_ILLEFAL } from '~/constant/code';
 import * as ROLE from '~/constant/role_access';
 import { OWER_HEAD } from '~/constant/ower';
 import utils from '~/utils';
+import moment from 'moment';
 
 interface RequestBody {
     id: number;
@@ -22,6 +23,7 @@ interface RequestBody {
     name: string;
     idcard: string;
     phone: string;
+    check_in_at: number;
 }
 
 const PcBuildingRegisteredAction = <Action>{
@@ -58,11 +60,16 @@ const PcBuildingRegisteredAction = <Action>{
                 name: 'phone',
                 regex: /^1\d{10}$/,
                 required: true
+            },
+            {
+                name: 'check_in_at',
+                required: true,
+                regex: /^\d{13}$/
             }
         ]
     },
     response: async ctx => {
-        const { community_id, id, name, idcard, phone } = <RequestBody>ctx.request.body;
+        const { community_id, id, name, idcard, phone, check_in_at } = <RequestBody>ctx.request.body;
 
         const info = await ctx.model
             .from('ejyy_building_info')
@@ -70,7 +77,12 @@ const PcBuildingRegisteredAction = <Action>{
             .andWhere('id', id)
             .first();
 
-        if (!info) {
+        const registered = await ctx.model
+            .from('ejyy_property_company_building_registered')
+            .where('building_id', id)
+            .first();
+
+        if (!info || info.check_in_at || registered) {
             return (ctx.body = {
                 code: QUERY_ILLEFAL,
                 message: '非法更新初始业主信息'
@@ -88,6 +100,16 @@ const PcBuildingRegisteredAction = <Action>{
             created_by: ctx.pcUserInfo.id,
             created_at: Date.now()
         });
+
+        await ctx.model
+            .from('ejyy_building_info')
+            .where('id', id)
+            .update(
+                'check_in_at',
+                moment(check_in_at)
+                    .startOf('day')
+                    .valueOf()
+            );
 
         const owerInfo = await ctx.model
             .from('ejyy_wechat_mp_user')

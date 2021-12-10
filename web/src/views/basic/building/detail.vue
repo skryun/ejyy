@@ -36,8 +36,8 @@
         <Card dis-hover :bordered="false" title="初始业主信息" class="mt-16">
             <span slot="extra">
                 <a @click="showModal" v-if="!detail.registered">
-                    <Icon type="ios-add-circle-outline" />
-                    添加
+                    <Icon type="ios-paper-plane" />
+                    更新
                 </a>
             </span>
             <Row class="detail-row" v-if="detail.registered">
@@ -52,6 +52,10 @@
                 <Col :lg="8" :sm="12" :xs="24">
                     <span class="detail-label">手机号码</span>
                     <div class="detail-content">{{ detail.registered.phone }}</div>
+                </Col>
+                <Col :lg="8" :sm="12" :xs="24">
+                    <span class="detail-label">入住时间</span>
+                    <div class="detail-content">{{ detail.info.check_in_at | mom_format(false) }}</div>
                 </Col>
             </Row>
             <Empty label="暂无初始业主信息" v-else />
@@ -87,6 +91,13 @@
                 </FormItem>
                 <FormItem prop="phone" label="手机号码：">
                     <Input v-model="form.phone" placeholder="请输入手机号码" />
+                </FormItem>
+                <FormItem prop="check_in_at" label="入住时间：">
+                    <DatePicker
+                        v-model="form.check_in_at"
+                        placeholder="请选择入住时间"
+                        :options="{ disabledDate: d => +d > Date.now() }"
+                    />
                 </FormItem>
             </Form>
 
@@ -137,7 +148,8 @@ import {
     Modal,
     Icon,
     Table,
-    Drawer
+    Drawer,
+    DatePicker
 } from 'view-design';
 import { Header, Empty, WaterMark } from '@/components';
 import * as utils from '@/utils';
@@ -162,7 +174,8 @@ export default {
             form: {
                 name: '',
                 idcard: '',
-                phone: ''
+                phone: '',
+                check_in_at: ''
             },
             rules: {
                 name: [
@@ -176,7 +189,8 @@ export default {
                 phone: [
                     { required: true, message: '请输入手机号码' },
                     { pattern: /^1\d{10}$/, message: '请输入正确的手机号码' }
-                ]
+                ],
+                check_in_at: [{ required: true, type: 'date', message: '请选择入住时间' }]
             },
             owers: [
                 {
@@ -428,10 +442,16 @@ export default {
                     ...this.form
                 };
 
+                data.check_in_at = +data.check_in_at;
+
                 utils.request
                     .post('/building/registered', data)
                     .then(() => {
                         this.detail.registered = data;
+                        this.detail.info = {
+                            ...this.detail.info,
+                            check_in_at: data.check_in_at
+                        };
                         this.submiting = false;
                         this.hideModal();
                         Message.success('更新初始业主信息成功');
@@ -647,7 +667,8 @@ export default {
         Icon,
         Table,
         Drawer,
-        WaterMark
+        WaterMark,
+        DatePicker
     }
 };
 </script>
