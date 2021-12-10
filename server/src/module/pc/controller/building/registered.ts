@@ -13,6 +13,7 @@
 import { Action } from '~/types/action';
 import { SUCCESS, QUERY_ILLEFAL } from '~/constant/code';
 import * as ROLE from '~/constant/role_access';
+import { OWER_HEAD } from '~/constant/ower';
 import utils from '~/utils';
 
 interface RequestBody {
@@ -87,6 +88,19 @@ const PcBuildingRegisteredAction = <Action>{
             created_by: ctx.pcUserInfo.id,
             created_at: Date.now()
         });
+
+        const owerInfo = await ctx.model
+            .from('ejyy_wechat_mp_user')
+            .where('idcard', idcard)
+            .first();
+
+        if (owerInfo) {
+            await ctx.model
+                .from('ejyy_user_building')
+                .where('building_id', id)
+                .andWhere('wechat_mp_user_id', owerInfo.id)
+                .update('identity', OWER_HEAD);
+        }
 
         ctx.body = {
             code: SUCCESS,

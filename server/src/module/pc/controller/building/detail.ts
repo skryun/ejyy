@@ -76,7 +76,9 @@ const PcBuildingDetailAction = <Action>{
                     'ejyy_user_building.id',
                     'ejyy_wechat_mp_user.id as user_id',
                     'ejyy_wechat_mp_user.real_name',
-                    'ejyy_user_building.status'
+                    'ejyy_user_building.status',
+                    'ejyy_user_building.authenticated_type',
+                    'ejyy_user_building.identity'
                 );
         }
 

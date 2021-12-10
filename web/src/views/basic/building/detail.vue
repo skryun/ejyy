@@ -195,6 +195,48 @@ export default {
                     }
                 },
                 {
+                    title: '认证类型',
+                    minWidth: 60,
+                    render: (h, p) => {
+                        let color;
+                        let text;
+
+                        if (p.row.authenticated_type === 1) {
+                            color = 'volcano';
+                            text = '实名信息自行关联';
+                        } else if (p.row.authenticated_type === 2) {
+                            color = 'orange';
+                            text = '物业公司现场认证';
+                        } else {
+                            color = 'red';
+                            text = '家人APP认证关联';
+                        }
+
+                        return h(Tag, { props: { color } }, text);
+                    }
+                },
+                {
+                    title: '身份类型',
+                    minWidth: 60,
+                    render: (h, p) => {
+                        let color;
+                        let text;
+
+                        if (p.row.identity === 1) {
+                            color = 'volcano';
+                            text = '户主';
+                        } else if (p.row.identity === 2) {
+                            color = 'orange';
+                            text = '家属';
+                        } else {
+                            color = 'red';
+                            text = '租客';
+                        }
+
+                        return h(Tag, { props: { color } }, text);
+                    }
+                },
+                {
                     title: '状态',
                     minWidth: 80,
                     render: (h, p) =>

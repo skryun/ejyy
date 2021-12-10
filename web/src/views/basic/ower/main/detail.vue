@@ -163,7 +163,7 @@ export default {
                     key: 'construction_area'
                 },
                 {
-                    title: '首次认证类型',
+                    title: '认证类型',
                     minWidth: 60,
                     render: (h, p) => {
                         let color;
@@ -178,6 +178,27 @@ export default {
                         } else {
                             color = 'red';
                             text = '家人APP认证关联';
+                        }
+
+                        return h(Tag, { props: { color } }, text);
+                    }
+                },
+                {
+                    title: '身份类型',
+                    minWidth: 60,
+                    render: (h, p) => {
+                        let color;
+                        let text;
+
+                        if (p.row.identity === 1) {
+                            color = 'volcano';
+                            text = '户主';
+                        } else if (p.row.identity === 2) {
+                            color = 'orange';
+                            text = '家属';
+                        } else {
+                            color = 'red';
+                            text = '租客';
                         }
 
                         return h(Tag, { props: { color } }, text);

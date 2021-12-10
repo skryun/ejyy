@@ -31,6 +31,7 @@ import {
     FIXMENT_PLEDGE_AVAILABLE
 } from '~/constant/status';
 import { HOUSE, CARPORT, WAREHOUSE, MERCHANT, GARAGE } from '~/constant/building';
+import { OWER_HEAD, OWER_RELEATION, OWER_TENANT } from '~/constant/ower';
 import { OPEARTE_BY_SELF, OPEARTE_BY_FAMILY, OPEARTE_BY_COMPANY } from '~/constant/operate_type';
 import {
     AUTHENTICTED_BY_SELF,
@@ -317,6 +318,7 @@ declare namespace EjyyModel {
         authenticated_user_id: number;
         // 	1 正常；0 解绑
         status?: typeof UNBINDING_BUILDING | typeof BINDING_BUILDING;
+        identity: typeof OWER_HEAD | typeof OWER_RELEATION | typeof OWER_TENANT;
         created_at: number;
     }
 

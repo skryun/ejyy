@@ -15,6 +15,7 @@ import { EjyyUserBuilding } from '~/types/model';
 import { SUCCESS, QRCODE_ILLEGAL, QRCODE_EXPIRED, NOT_FOUND_BINDING_BUILDING } from '~/constant/code';
 import { NORMAL_STATUS } from '~/constant/status';
 import { AUTHENTICTED_BY_FAMILY } from '~/constant/authenticated_type';
+import { OWER_RELEATION } from '~/constant/ower';
 import utils from '~/utils';
 import communityService from '~/service/community';
 import config from '~/config';
@@ -107,6 +108,7 @@ const MpCommunityBindingByFamliyAction = <Action>{
                 authenticated: 1,
                 authenticated_type: qrInfo.authenticated_type,
                 authenticated_user_id: qrInfo.user_id,
+                identity: OWER_RELEATION,
                 created_at: Date.now()
             });
         }

@@ -14,6 +14,7 @@ import { Action } from '~/types/action';
 import { EjyyUserBuilding } from '~/types/model';
 import { SUCCESS, NOT_FOUND_BINDING_BUILDING } from '~/constant/code';
 import { AUTHENTICTED_BY_SELF } from '~/constant/authenticated_type';
+import { OWER_HEAD } from '~/constant/ower';
 import communityService from '~/service/community';
 
 // 通过物业后台录入手机号业主自动绑定
@@ -54,6 +55,7 @@ const MpCommunityBindingBySlefAction = <Action>{
                 authenticated: 1,
                 authenticated_type: AUTHENTICTED_BY_SELF,
                 authenticated_user_id: ctx.mpUserInfo.id,
+                identity: OWER_HEAD,
                 created_at: Date.now()
             });
         }

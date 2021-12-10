@@ -93,7 +93,8 @@ const PcOwerDetailAction = <Action>{
                 'ejyy_building_info.created_at',
                 'ejyy_user_building.authenticated',
                 'ejyy_user_building.authenticated_type',
-                'ejyy_user_building.status'
+                'ejyy_user_building.status',
+                'ejyy_user_building.identity'
             );
 
         if (buildings.length === 0) {

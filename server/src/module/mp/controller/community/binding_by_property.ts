@@ -14,6 +14,7 @@ import { Action } from '~/types/action';
 import { EjyyUserBuilding } from '~/types/model';
 import { SUCCESS, QRCODE_ILLEGAL, QRCODE_EXPIRED, NOT_FOUND_BINDING_BUILDING } from '~/constant/code';
 import { AUTHENTICTED_BY_PROPERTY_COMPANY } from '~/constant/authenticated_type';
+import { OWER_RELEATION, OWER_HEAD } from '~/constant/ower';
 import utils from '~/utils';
 import communityService from '~/service/community';
 import config from '~/config';
@@ -72,12 +73,19 @@ const MpCommunityBindingByPropertyAction = <Action>{
         const bindingData: EjyyUserBuilding[] = [];
 
         for (const buildindInfo of buildingsInfo) {
+            const isOwerHeader = await ctx.model
+                .from('ejyy_property_company_building_registered')
+                .where('building_id', buildindInfo.id)
+                .andWhere('idcard', ctx.mpUserInfo.idcard)
+                .first();
+
             bindingData.push({
                 building_id: buildindInfo.id,
                 wechat_mp_user_id: ctx.mpUserInfo.id,
                 authenticated: 1,
                 authenticated_type: qrInfo.authenticated_type,
                 authenticated_user_id: qrInfo.user_id,
+                identity: isOwerHeader ? OWER_HEAD : OWER_RELEATION,
                 created_at: Date.now()
             });
         }
