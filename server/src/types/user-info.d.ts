@@ -11,6 +11,7 @@
  */
 
 import { Role } from '~/constant/role_access';
+import { TRUE, FALSE } from '~/constant/status';
 
 declare namespace UserInfo {
     interface MpUserInfo {
@@ -22,8 +23,9 @@ declare namespace UserInfo {
         avatar_url: string;
         gender: number;
         signature: string;
-        intact: 0 | 1;
-        status: 0 | 1;
+        intact: typeof TRUE | typeof FALSE;
+        status: typeof TRUE | typeof FALSE;
+        face_img: string;
         created_at: number;
     }
 
@@ -45,7 +47,7 @@ declare namespace UserInfo {
         join_company_at: number;
         birth_date: number;
         access: Role[];
-        admin: 0 | 1;
+        admin: typeof TRUE | typeof FALSE;
         department_id: number;
         job_id: number;
         created_by: number;

@@ -140,6 +140,8 @@ declare namespace EjyyModel {
         gender: Gender;
         signature: string;
         intact: typeof INTACT_USER_INFO | typeof INCOMPLETE_USER_INFO;
+        face_img?: string;
+        face_descriptor?: string;
         created_at: number;
     }
 

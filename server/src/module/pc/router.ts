@@ -125,6 +125,7 @@ export { default as PcOwerApproveAction } from './controller/ower/approve';
 export { default as PcOwerApplyListAction } from './controller/ower/apply_list';
 export { default as PcOwerApplyReplyAction } from './controller/ower/apply_reply';
 export { default as PcOwerApplyDetailAction } from './controller/ower/apply_detail';
+export { default as PcOwerUpdateAction } from './controller/ower/update';
 
 export { default as PcBuildingBindingAction } from './controller/building/binding';
 export { default as PcBuildingUnbindingAction } from './controller/building/unbinding';

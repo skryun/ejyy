@@ -29,6 +29,7 @@ import NotifyModule from '~/module/notify';
 import OaModule from '~/module/oa';
 import wss from '~/wss';
 import * as redisService from '~/service/redis';
+import * as faceService from '~/service/face';
 import ModelMiddleware from '~/middleware/model';
 import IpMiddleware from '~/middleware/ip';
 import HeaderMiddleware from '~/middleware/header';
@@ -67,6 +68,9 @@ if (cluster.isMaster) {
 
     // 物联网
     iot.init(router);
+
+    // 人脸识别
+    faceService.init();
 
     app.use(KoaBodyMiddleware({ multipart: true }))
         .use(

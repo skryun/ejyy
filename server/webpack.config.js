@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
+const copyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: 'production',
@@ -33,5 +34,15 @@ module.exports = {
             loader: 'ts-loader',
             exclude: /node_modules/
         }]
-    }
+    },
+    plugins: [
+        new copyPlugin({
+            patterns: [
+                {
+                    from: path.join(__dirname, '../weights'),
+                    to: path.posix.join(__dirname, 'dist/weights')
+                }
+            ]
+        })
+    ]
 };

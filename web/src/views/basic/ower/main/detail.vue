@@ -12,6 +12,13 @@
         </Alert>
 
         <Card dis-hover :bordered="false" title="业主信息">
+            <span slot="extra">
+                <a @click="showDrawer">
+                    <Icon type="ios-paper-plane" />
+                    更新
+                </a>
+            </span>
+
             <Row class="detail-row">
                 <Col :lg="8" :sm="12" :xs="24">
                     <span class="detail-label">小区名称</span>
@@ -66,6 +73,15 @@
                 </Col>
                 <Col :lg="8" :sm="12" :xs="24">
                     <span class="detail-label">
+                        人脸相片
+                    </span>
+                    <div class="detail-content">
+                        <Images v-if="!fetching && detail.info.face_img" :imgs="[detail.info.face_img]" />
+                        <span v-else>暂未设置</span>
+                    </div>
+                </Col>
+                <Col :lg="8" :sm="12" :xs="24">
+                    <span class="detail-label">
                         账号状态
                     </span>
                     <div class="detail-content">
@@ -99,6 +115,39 @@
             <Table :data="detail.cars" :columns="cars" />
         </Card>
         <Spin size="large" fix v-if="fetching" />
+
+        <Drawer
+            :value="visible"
+            title="更新业主信息"
+            transfer
+            width="460"
+            class-name="cw-drawer-width-footer"
+            :closable="false"
+            :mask-closable="false"
+        >
+            <Form ref="form" :rules="rules" :model="form" @submit.native.prevent label-position="top">
+                <FormItem prop="name" label="业主姓名：">
+                    <Input v-model="form.name" placeholder="请输入业主姓名" />
+                </FormItem>
+                <FormItem prop="idcard" label="身份证号码：">
+                    <Input v-model="form.idcard" placeholder="请输入身份证号码" />
+                </FormItem>
+                <FormItem prop="face_img" label="人脸照片：">
+                    <AvatarCrop
+                        dir="face"
+                        text="上传人脸相片"
+                        v-model="form.face_img"
+                        updateText="更新人脸相片"
+                        title="更新人脸相片"
+                    />
+                </FormItem>
+            </Form>
+
+            <div class="cw-drawer-footer">
+                <Button @click="hideDrawer">取消</Button>
+                <Button type="primary" @click="submit" :loading="submiting">更新</Button>
+            </div>
+        </Drawer>
     </WaterMark>
 </template>
 
@@ -116,8 +165,25 @@
  */
 
 import { mapGetters } from 'vuex';
-import { Card, Spin, Row, Col, Tag, Alert, Table, Modal, Message } from 'view-design';
-import { Header, Images, WaterMark } from '@/components';
+import { mapGetters } from 'vuex';
+import {
+    Card,
+    Spin,
+    Row,
+    Col,
+    Tag,
+    Alert,
+    Table,
+    Modal,
+    Message,
+    Form,
+    FormItem,
+    Input,
+    Button,
+    Icon,
+    Drawer
+} from 'view-design';
+import { Header, Images, WaterMark, AvatarCrop } from '@/components';
 import * as utils from '@/utils';
 import ROLES from '@/constants/role';
 
@@ -127,6 +193,8 @@ export default {
         return {
             ROLES,
             fetching: true,
+            visible: false,
+            submiting: false,
             detail: {
                 info: {},
                 buildings: [],
@@ -283,7 +351,23 @@ export default {
                         }
                     }
                 }
-            ]
+            ],
+            form: {
+                name: '',
+                idcard: '',
+                face_img: ''
+            },
+            rules: {
+                name: [
+                    { required: true, message: '请输入业主姓名' },
+                    { max: 12, message: '业主姓名最多输入12个字' }
+                ],
+                idcard: [
+                    { required: true, message: '请输入身份证号码' },
+                    { pattern: /^\d{17}(x|X|\d){1}$/, message: '请输入正确的身份证号码' }
+                ],
+                face_img: [{ required: true, message: '请上传人脸相片，否则无法使用人脸门禁' }]
+            }
         };
     },
     mounted() {
@@ -361,6 +445,44 @@ export default {
                         .catch(() => {});
                 }
             });
+        },
+        showDrawer() {
+            this.visible = true;
+            this.form = {
+                name: this.detail.info.real_name,
+                idcard: this.detail.info.idcard,
+                face_img: this.detail.info.face_img
+            };
+            this.$refs.form.resetFields();
+        },
+        hideDrawer() {
+            this.visible = false;
+        },
+        submit() {
+            this.$refs.form.validate(valid => {
+                if (!valid) return;
+
+                this.submiting = true;
+
+                const data = {
+                    id: this.$route.params.id,
+                    community_id: this.postInfo.default_community_id,
+                    ...this.form
+                };
+
+                utils.request
+                    .post('/ower/update', data)
+                    .then(() => {
+                        this.detail.info = {
+                            ...this.detail.info,
+                            ...this.form
+                        };
+                        this.submiting = false;
+                        this.hideDrawer();
+                        Message.success('更新业主信息成功');
+                    })
+                    .catch(() => (this.submiting = false));
+            });
         }
     },
     computed: {
@@ -412,7 +534,15 @@ export default {
         Images,
         Alert,
         Table,
-        WaterMark
+        WaterMark,
+        AvatarCrop,
+        Modal,
+        Form,
+        FormItem,
+        Input,
+        Button,
+        Icon,
+        Drawer
     }
 };
 </script>

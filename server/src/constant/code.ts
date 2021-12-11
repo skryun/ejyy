@@ -164,3 +164,5 @@ export const IOT_PARK_ILLEGAL = -179;
 export const IOT_WARNING_ILLEGAL = -180;
 // 物联网设备秘钥错误
 export const IOT_SECRET_ERROR = -181;
+// 人脸相片采集失败
+export const OWER_FACE_IMG_FAILED = -182;
